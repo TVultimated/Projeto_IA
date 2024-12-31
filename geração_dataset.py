@@ -5,26 +5,26 @@ from datetime import datetime, timedelta
 def gerar_localizacao():
     """Gera uma localização (GPS) categorizada."""
     locais = {
-        "cinema": {"latitude": (23.7960, 23.7980), "longitude": (90.3620, 90.3640)},
-        "casa": {"latitude": (23.7950, 23.7960), "longitude": (90.3610, 90.3620)},
-        "trabalho": {"latitude": (23.7980, 23.7990), "longitude": (90.3640, 90.3650)},
-        "parque": {"latitude": (23.7990, 23.8000), "longitude": (90.3650, 90.3660)},
-        "centro comercial": {"latitude": (23.8000, 23.8010), "longitude": (90.3660, 90.3670)},
-        "restaurante": {"latitude": (23.8010, 23.8020), "longitude": (90.3670, 90.3680)},
-        "escola": {"latitude": (23.8020, 23.8030), "longitude": (90.3680, 90.3690)},
-        "universidade": {"latitude": (23.8030, 23.8040), "longitude": (90.3690, 90.3700)},
-        "ginásio": {"latitude": (23.8040, 23.8050), "longitude": (90.3700, 90.3710)},
-        "igreja": {"latitude": (23.8050, 23.8060), "longitude": (90.3710, 90.3720)},
-        "praia": {"latitude": (23.8060, 23.8070), "longitude": (90.3720, 90.3730)},
-        "hospital": {"latitude": (23.8070, 23.8080), "longitude": (90.3730, 90.3740)},
-        "biblioteca": {"latitude": (23.8080, 23.8090), "longitude": (90.3740, 90.3750)},
-        "museu": {"latitude": (23.8090, 23.8100), "longitude": (90.3750, 90.3760)},
-        "teatro": {"latitude": (23.8100, 23.8110), "longitude": (90.3760, 90.3770)},
-        "auditório": {"latitude": (23.8110, 23.8120), "longitude": (90.3770, 90.3780)},
-        "loja": {"latitude": (23.8120, 23.8130), "longitude": (90.3780, 90.3790)},
-        "farmácia": {"latitude": (23.8130, 23.8140), "longitude": (90.3790, 90.3800)},
-        "estação": {"latitude": (23.8140, 23.8150), "longitude": (90.3800, 90.3810)},
-        "aeroporto": {"latitude": (23.8150, 23.8160), "longitude": (90.3810, 90.3820)},
+        "Cinema NOS Colombo": {"latitude": (38.7513, 38.7514), "longitude": (-9.1974, -9.1973)},
+        "Casa": {"latitude": (38.7151, 38.7153), "longitude": (-9.1603, -9.1601)},
+        "Escritório": {"latitude": (38.7369, 38.7371), "longitude": (-9.1398, -9.1396)},
+        "Parque Eduardo VII": {"latitude": (38.7108, 38.7110), "longitude": (-9.1374, -9.1372)},
+        "Amoreiras Shopping": {"latitude": (38.7277, 38.7279), "longitude": (-9.1638, -9.1636)},
+        "Restaurante Portugália (Av. Almirante Reis)": {"latitude": (38.7323, 38.7325), "longitude": (-9.1291, -9.1290)},
+        "Escola Secundária Rainha Dona Amélia": {"latitude": (38.7436, 38.7438), "longitude": (-9.1832, -9.1830)},
+        "Universidade Autónoma de Lisboa": {"latitude": (38.7165, 38.7167), "longitude": (-9.1452, -9.1450)},
+        "Ginásio Lemonfit Olaias": {"latitude": (38.7430, 38.7432), "longitude": (-9.1250, -9.1248)},
+        "Sé de Lisboa": {"latitude": (38.7223, 38.7225), "longitude": (-9.1393, -9.1391)},
+        "Praia": {"latitude": (38.6916, 38.6918), "longitude": (-9.2160, -9.2158)},
+        "Hospital da Luz": {"latitude": (38.7516, 38.7518), "longitude": (-9.2033, -9.2031)},
+        "Biblioteca Nacional de Portugal": {"latitude": (38.7380, 38.7382), "longitude": (-9.1622, -9.1620)},
+        "Museu de Belém": {"latitude": (38.6912, 38.6914), "longitude": (-9.2166, -9.2164)},
+        "Teatro Politeama": {"latitude": (38.7101, 38.7103), "longitude": (-9.1379, -9.1377)},
+        "Auditório Camões": {"latitude": (38.7242, 38.7244), "longitude": (-9.1501, -9.1499)},
+        "Bertrand do Chiado": {"latitude": (38.7106, 38.7108), "longitude": (-9.1398, -9.1396)},
+        "Farmácia Benfica": {"latitude": (38.7396, 38.7398), "longitude": (-9.1656, -9.1654)},
+        "Estação do Rossio": {"latitude": (38.7322, 38.7324), "longitude": (-9.1418, -9.1416)},
+        "Aeroporto Humberto Delgado": {"latitude": (38.7680, 38.7682), "longitude": (-9.1288, -9.1286)},
     }
     local = random.choice(list(locais.keys()))
     latitude = round(random.uniform(*locais[local]["latitude"]), 6)
@@ -56,17 +56,6 @@ def gerar_movimento():
         gyroscope = [random.uniform(-3, 3), random.uniform(-3, 3), random.uniform(-3, 3)]
     return estado, accelerometer, gyroscope
 
-def gerar_evento_agenda():
-    """Gera eventos de calendário entre várias opções."""
-    eventos = [
-        "Reunião", "Sessão de cinema", "Trabalho", "Estudo", "Descanso",
-        "Consulta médica", "Jantar com amigos", "Viagem de negócios", "Aniversário",
-        "Apresentação", "Conferência", "Treino", "Compras", "Entrega de trabalho",
-        "Exame", "Lazer", "Passeio", "Voluntariado", "Entrevista", "Manutenção"
-    ]
-    probabilidade_evento = 0.5  # 50% de chance de haver um evento
-    return random.choice(eventos) if random.random() < probabilidade_evento else "Nenhum evento"
-
 def gerar_data_aleatoria():
     """Gera uma data/hora aleatória entre 01/01/2024 e 31/12/2024."""
     data_inicio = datetime(2024, 1, 1)
@@ -87,20 +76,20 @@ def criar_dataset_csv(nome_arquivo="dataset_sintetico.csv", num_amostras=1000):
             "gyroscope_x", "gyroscope_y", "gyroscope_z", "calendar_event"
         ])
 
+        # Dentro do loop principal que gera os dados
         for i in range(1, num_amostras + 1):
             # Gerar dados
             data_criacao = gerar_data_aleatoria()
             local, latitude, longitude = gerar_localizacao()
             ruido, categoria_ruido = gerar_nivel_ruido()
             movimento, accelerometer, gyroscope = gerar_movimento()
-            evento = gerar_evento_agenda()
 
             # Escrever no CSV
             writer.writerow([
                 i, data_criacao.strftime("%Y-%m-%d %H:%M:%S"), local, latitude, longitude,
                 ruido, categoria_ruido, movimento,
                 accelerometer[0], accelerometer[1], accelerometer[2],
-                gyroscope[0], gyroscope[1], gyroscope[2], evento
+                gyroscope[0], gyroscope[1], gyroscope[2]
             ])
 
     print(f"Dataset sintético criado com sucesso: {nome_arquivo} ({num_amostras} amostras)")
