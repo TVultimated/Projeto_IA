@@ -1,4 +1,4 @@
-﻿id,datetime,location,latitude,longitude,noise_level,noise_category,movement_state,acceleration_x,acceleration_y,acceleration_z,gyroscope_x,gyroscope_y,gyroscope_z,calendar_event
+﻿id,datetime,location,latitude,longitude,noise_level,noise_category,movement_state,acceleration_x,acceleration_y,acceleration_z,gyroscope_x,gyroscope_y,gyroscope_z
 1,2024-07-23 16:55:31,Teatro Politeama,38.710165,-9.137719,94.36,ruidoso,estático,0,0,9.8,0,0,0
 2,2024-01-02 09:51:24,Escritório,38.736976,-9.139612,97.46,ruidoso,estático,0,0,9.8,0,0,0
 3,2024-08-17 15:36:20,Parque Eduardo VII,38.710875,-9.137265,12.07,silêncio,estático,0,0,9.8,0,0,0

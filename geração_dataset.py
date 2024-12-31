@@ -73,7 +73,7 @@ def criar_dataset_csv(nome_arquivo="dataset_sintetico.csv", num_amostras=1000):
             "id", "datetime", "location", "latitude", "longitude",
             "noise_level", "noise_category", "movement_state",
             "acceleration_x", "acceleration_y", "acceleration_z",
-            "gyroscope_x", "gyroscope_y", "gyroscope_z", "calendar_event"
+            "gyroscope_x", "gyroscope_y", "gyroscope_z"
         ])
 
         # Dentro do loop principal que gera os dados
