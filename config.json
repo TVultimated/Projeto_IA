@@ -1,0 +1,118 @@
+{
+    "locais": {
+        "Cinema NOS Colombo": {
+            "latitude": [38.7513, 38.7514],
+            "longitude": [-9.1974, -9.1973],
+            "ruido": [0, 30],
+            "movimento": ["estatico"]
+        },
+        "Casa": {
+            "latitude": [38.7151, 38.7153],
+            "longitude": [-9.1603, -9.1601],
+            "ruido": [20, 50],
+            "movimento": ["estatico", "movimento lento"]
+        },
+        "Escritorio": {
+            "latitude": [38.7369, 38.7371],
+            "longitude": [-9.1398, -9.1396],
+            "ruido": [30, 60],
+            "movimento": ["estatico", "movimento lento"]
+        },
+        "Parque Eduardo VII": {
+            "latitude": [38.7108, 38.7110],
+            "longitude": [-9.1374, -9.1372],
+            "ruido": [40, 70],
+            "movimento": ["movimento lento", "movimento rapido"]
+        },
+        "Amoreiras Shopping": {
+            "latitude": [38.7277, 38.7279],
+            "longitude": [-9.1638, -9.1636],
+            "ruido": [50, 80],
+            "movimento": ["movimento lento", "movimento rapido"]
+        },
+        "Teatro Politeama": {
+            "latitude": [38.7101, 38.7103],
+            "longitude": [-9.1379, -9.1377],
+            "ruido": [0, 30],
+            "movimento": ["estatico"]
+        },
+        "Auditorio Camoes": {
+            "latitude": [38.7242, 38.7244],
+            "longitude": [-9.1501, -9.1499],
+            "ruido": [0, 30],
+            "movimento": ["estatico"]
+        },
+        "Aeroporto Humberto Delgado": {
+            "latitude": [38.7680, 38.7682],
+            "longitude": [-9.1288, -9.1286],
+            "ruido": [60, 100],
+            "movimento": ["movimento lento", "movimento rapido"]
+        },
+        "Praia": {
+            "latitude": [38.6916, 38.6918],
+            "longitude": [-9.2160, -9.2158],
+            "ruido": [30, 70],
+            "movimento": ["movimento lento", "movimento rapido"]
+        },
+        "Hospital da Luz": {
+            "latitude": [38.7516, 38.7518],
+            "longitude": [-9.2033, -9.2031],
+            "ruido": [30, 70],
+            "movimento": ["movimento lento", "estatico"]
+        },
+        "Biblioteca Nacional de Portugal": {
+            "latitude": [38.7380, 38.7382],
+            "longitude": [-9.1622, -9.1620],
+            "ruido": [0, 40],
+            "movimento": ["estatico"]
+        },
+        "Torre de Belem": {
+            "latitude": [38.6912, 38.6914],
+            "longitude": [-9.2166, -9.2164],
+            "ruido": [30, 60],
+            "movimento": ["movimento lento", "movimento rapido"]
+        },
+        "Restaurante Portugalia": {
+            "latitude": [38.7323, 38.7325],
+            "longitude": [-9.1291, -9.1290],
+            "ruido": [30, 60],
+            "movimento": ["movimento lento"]
+        },
+        "Escola Rainha Dona Amelia": {
+            "latitude": [38.7436, 38.7438],
+            "longitude": [-9.1832, -9.1830],
+            "ruido": [30, 60],
+            "movimento": ["estatico", "movimento lento"]
+        },
+        "Universidade Autonoma de Lisboa": {
+            "latitude": [38.7165, 38.7167],
+            "longitude": [-9.1452, -9.1450],
+            "ruido": [30, 60],
+            "movimento": ["estatico", "movimento lento"]
+        },
+        "Ginasio Lemonfit Olaias": {
+            "latitude": [38.7430, 38.7432],
+            "longitude": [-9.1250, -9.1248],
+            "ruido": [40, 80],
+            "movimento": ["movimento lento", "movimento rapido"]
+        },
+        "Bertrand do Chiado": {
+            "latitude": [38.7106, 38.7108],
+            "longitude": [-9.1398, -9.1396],
+            "ruido": [30, 60],
+            "movimento": ["estatico"]
+        },
+        "Farmacia Benfica": {
+            "latitude": [38.7396, 38.7398],
+            "longitude": [-9.1656, -9.1654],
+            "ruido": [30, 60],
+            "movimento": ["movimento lento"]
+        },
+        "Estacao do Rossio": {
+            "latitude": [38.7322, 38.7324],
+            "longitude": [-9.1418, -9.1416],
+            "ruido": [50, 90],
+            "movimento": ["movimento lento", "movimento rapido"]
+        }
+    }
+}
