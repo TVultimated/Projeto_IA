@@ -73,6 +73,33 @@ def adicionar_outliers(dataset, num_outliers=50):
         dataset.at[index, 'acceleration_y'] = random.uniform(10, 20)  # Outlier em aceleração
         dataset.at[index, 'acceleration_z'] = random.uniform(20, 30)  # Outlier em aceleração
 
+def determinar_estado(local, ruido_categoria, movimento, giroscopio):
+    
+    locais_silenciar = [
+        "Cinema NOS Colombo", "Teatro Politeama", "Auditorio Camoes",
+        "Biblioteca Nacional de Portugal", "Bertrand do Chiado"
+    ]
+    
+    locais_desligar = [
+        "Hospital da Luz", "Escola Rainha Dona Amelia", 
+        "Universidade Autonoma de Lisboa", "Farmacia Benfica"
+    ]
+    
+    #silenciar se o giroscópio indicar "virado para baixo"
+    if giroscopio == "virado para baixo":
+        return "silenciar"
+    
+    # Regra para locais silenciosos
+    elif local in locais_silenciar and ruido_categoria == "silencio" and movimento == "estatico":
+        return "silenciar"
+    
+    # Regra para locais inapropriados
+    if local in locais_desligar and movimento == "estatico":
+        return "desligar"
+    
+    return "não alterar"
+
+
 def criar_dataset_csv(nome_arquivo="dataset_sintetico.csv", num_amostras=1000, num_outliers=50):
     """Cria um dataset sintético com os dados necessários para o projeto."""
     with open(nome_arquivo, mode="w", encoding="utf-8-sig", newline="") as csv_file:
@@ -81,7 +108,7 @@ def criar_dataset_csv(nome_arquivo="dataset_sintetico.csv", num_amostras=1000, n
         writer.writerow([ 
             "id", "datetime", "location", "latitude", "longitude",
             "noise_level", "noise_category", "acceleration_x", "acceleration_y", "acceleration_z",
-            "gyroscope_x", "gyroscope_y", "gyroscope_z", "gyroscope_orientation", "movement_state"
+            "gyroscope_x", "gyroscope_y", "gyroscope_z", "gyroscope_orientation", "movement_state","estado"
         ])
         
         for i in range(1, num_amostras + 1):
@@ -91,13 +118,14 @@ def criar_dataset_csv(nome_arquivo="dataset_sintetico.csv", num_amostras=1000, n
             movimento, acelerometro = gerar_movimento(local)
             gyroscope_x, gyroscope_y, gyroscope_z = gerar_giroscopio_aleatorio()
             giroscopio_orientacao = gerar_orientacao_gyroscope(gyroscope_z)
+            estado = determinar_estado(local,categoria_ruido,movimento,giroscopio_orientacao)
 
             # Escrever no CSV
             writer.writerow([
                 i, data_criacao.strftime("%Y-%m-%d %H:%M:%S"), local, latitude, longitude,
                 ruido, categoria_ruido,
                 acelerometro[0], acelerometro[1], acelerometro[2],
-                gyroscope_x, gyroscope_y, gyroscope_z, giroscopio_orientacao, movimento
+                gyroscope_x, gyroscope_y, gyroscope_z, giroscopio_orientacao, movimento, estado
             ])
 
     # Criar outliers
