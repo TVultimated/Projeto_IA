@@ -999,3 +999,5 @@ id,datetime,location,latitude,longitude,noise_level,noise_category,acceleration_
 998,2024-02-26 22:38:49,Ginasio Lemonfit Olaias,38.74313,-9.124969,62.89,moderado,0.3550842077709635,-0.2000142121088133,8.550817010285703,-0.57,2.21,4.89,virado para cima,movimento lento,não alterar
 999,2024-12-21 17:03:40,Amoreiras Shopping,38.727724,-9.163666,69.98,moderado,-2.8085336420074025,-2.376703893880374,8.707157047682855,-1.34,4.85,3.89,virado para cima,movimento rapido,não alterar
 1000,2024-10-10 18:09:24,Hospital da Luz,38.751655,-9.203144,45.96,moderado,-0.0053655948532477,-0.0007523718349778,9.7994418886499,-1.75,-4.16,-5.92,virado para baixo,estatico,silenciar
+1001,2025-01-24 16:31:52,Mafra,12.0,312.0,34.0,moderado,12.0,31.0,231.0,212.0,1.0,2.0,virado para baixo,estatico,silenciar
+1002,2025-01-24 16:36:47,Mafra,1231231.0,23125.0,100.0,ruidoso,12312.0,11.0,2.0,0.0,0.0,0.0,virado para baixo,estatico,desligar

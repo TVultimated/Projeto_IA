@@ -24,23 +24,18 @@ def load_model(model_name):
     else:
         raise ValueError(f"Modelo '{model_name}' não encontrado. Escolha entre: {list(MODELS.keys())}")
 
-# Função para reaplicar o modelo
-# Simula a aplicação do modelo com resultados fictícios
-# Adiciona uma coluna "Prediction" ao dataset para representar o resultado
+# Função para reaplicar o modelo usando lógica real
 def apply_model(input_data, model_name):
     print(f"Executando o modelo '{model_name}' com o dataset atualizado...")
-    input_data = input_data.copy()
-    if model_name == 'cnn':
-        input_data['Prediction'] = input_data['noise_level'] * 1.1  # Exemplo fictício
-    elif model_name == 'logistic':
-        input_data['Prediction'] = input_data['noise_level'] * 0.9
-    elif model_name == 'nn':
-        input_data['Prediction'] = input_data['noise_level'] * 1.05
-    elif model_name == 'rf':
-        input_data['Prediction'] = input_data['noise_level'] * 0.95
+    model = load_model(model_name)  # Carregar o modelo correspondente
+
+    # Verificar se o modelo possui uma função existente para aplicação
+    if hasattr(model, 'train_model'):
+        predictions = model.train_model(input_data)  # Usar a função 'train_model' se existir
     else:
-        input_data['Prediction'] = 0  # Caso o modelo não seja identificado
-    return input_data[['id', 'estado', 'Prediction']]
+        raise AttributeError(f"O modelo '{model_name}' não possui uma função 'train_model'. Certifique-se de que está implementada.")
+
+    return predictions
 
 # Função para validar entradas
 def validate_input(prompt, expected_type, options=None):
@@ -122,67 +117,83 @@ def main():
 
     # Loop contínuo até o utilizador decidir parar
     while True:
-        # Validar modelo escolhido
-        model_name = None
-        while model_name not in MODELS:
-            model_name = input(f"Escolha o modelo ({', '.join(MODELS.keys())}): ").strip().lower()
-            if model_name not in MODELS:
-                print(f"Modelo inválido. Escolha entre: {', '.join(MODELS.keys())}.")
+        print("\nO que deseja fazer?")
+        print("1. Adicionar novos dados")
+        print("2. Correr o modelo atual")
+        action = input("Escolha uma opção (1 ou 2): ").strip()
 
-        # Carregar dataset
-        try:
-            if os.path.exists(dataset_path):
-                dataset = pd.read_csv(dataset_path)
-            else:
-                dataset = pd.DataFrame(columns=[
-                    'id', 'datetime', 'location', 'latitude', 'longitude', 'noise_level', 'noise_category',
-                    'acceleration_x', 'acceleration_y', 'acceleration_z',
-                    'gyroscope_x', 'gyroscope_y', 'gyroscope_z', 'gyroscope_orientation',
-                    'movement_state', 'estado'
-                ])
-            print(f"Dataset '{dataset_path}' carregado com sucesso.")
-        except Exception as e:
-            print(f"Erro ao carregar o dataset: {e}")
-            return
+        if action == '1':
+            # Carregar dataset
+            try:
+                if os.path.exists(dataset_path):
+                    dataset = pd.read_csv(dataset_path)
+                else:
+                    dataset = pd.DataFrame(columns=[
+                        'id', 'datetime', 'location', 'latitude', 'longitude', 'noise_level', 'noise_category',
+                        'acceleration_x', 'acceleration_y', 'acceleration_z',
+                        'gyroscope_x', 'gyroscope_y', 'gyroscope_z', 'gyroscope_orientation',
+                        'movement_state', 'estado'
+                    ])
+                print(f"Dataset '{dataset_path}' carregado com sucesso.")
+            except Exception as e:
+                print(f"Erro ao carregar o dataset: {e}")
+                return
 
-        # Exibir informações iniciais do dataset
-        print("\nDistribuição das classes:")
-        print(dataset['estado'].value_counts())
-        print("\nDimensões dos dados:")
-        print(f"X shape: {dataset.shape}")
+            # Obter novos dados do utilizador
+            new_data = get_user_data(dataset)
+            if not new_data.empty:
+                dataset = pd.concat([dataset, new_data], ignore_index=True)
+                dataset.to_csv(dataset_path, index=False)
+                print("Novos dados adicionados ao dataset.")
 
-        # Obter novos dados do utilizador
-        new_data = get_user_data(dataset)
-        if not new_data.empty:
-            dataset = pd.concat([dataset, new_data], ignore_index=True)
-            dataset.to_csv(dataset_path, index=False)
-            print("Novos dados adicionados ao dataset.")
+        elif action == '2':
+            # Validar modelo escolhido
+            model_name = None
+            while model_name not in MODELS:
+                model_name = input(f"Escolha o modelo ({', '.join(MODELS.keys())}): ").strip().lower()
+                if model_name not in MODELS:
+                    print(f"Modelo inválido. Escolha entre: {', '.join(MODELS.keys())}.")
 
-        # Limpar dados inválidos
-        dataset = clean_dataset(dataset)
-        if dataset.empty:
-            print("Erro: Todos os dados são inválidos após limpeza. Verifique os inputs.")
-            return
+            # Carregar dataset
+            try:
+                if os.path.exists(dataset_path):
+                    dataset = pd.read_csv(dataset_path)
+                else:
+                    print("Erro: Nenhum dataset encontrado. Adicione dados primeiro.")
+                    continue
+            except Exception as e:
+                print(f"Erro ao carregar o dataset: {e}")
+                return
 
-        # Reaplicar o modelo
-        try:
-            results = apply_model(dataset, model_name)
-            print("Resultados do modelo:")
-            print(results)
+            # Limpar dados inválidos
+            dataset = clean_dataset(dataset)
+            if dataset.empty:
+                print("Erro: Todos os dados são inválidos após limpeza. Verifique os inputs.")
+                return
 
-            # Gerar relatório fictício de classificação
-            print("\nRelatório de Classificação:")
-            fake_labels = dataset['estado'].sample(len(dataset), replace=True).values
-            fake_predictions = results['Prediction'].apply(lambda x: 'silenciar' if x < 50 else 'não alterar').values
-            print(classification_report(fake_labels, fake_predictions))
+            # Reaplicar o modelo
+            try:
+                results = apply_model(dataset, model_name)
+                print("Resultados do modelo:")
+                print(results)
 
-        except Exception as e:
-            print(f"Erro durante o processamento: {e}")
+                # Gerar relatório fictício de classificação
+                print("\nRelatório de Classificação:")
+                fake_labels = dataset['estado'].sample(len(dataset), replace=True).values
+                fake_predictions = results['Prediction'].apply(lambda x: 'silenciar' if x < 50 else 'não alterar').values
+                print(classification_report(fake_labels, fake_predictions))
+
+            except Exception as e:
+                print(f"Erro durante o processamento: {e}")
+
+        else:
+            print("Opção inválida. Tente novamente.")
+            continue
 
         # Perguntar se o utilizador deseja continuar
         continue_program = input("Deseja continuar? (s/n): ").strip().lower()
         if continue_program != 's':
-            print("Encerrando o programa.")
+            print("Encerrando o programa. Até logo!")
             break
 
 if __name__ == "__main__":
