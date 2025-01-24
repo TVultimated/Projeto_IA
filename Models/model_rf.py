@@ -9,7 +9,7 @@ from tensorflow.keras.utils import to_categorical
 
 # 1. Carregar o dataset
 print("Carregando dados...")
-data = pd.read_csv('../dataset_sintetico.csv')
+data = pd.read_csv('dataset_sintetico.csv')  
 
 # 2. Selecionar features sensoriais
 selected_features = [
