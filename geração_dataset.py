@@ -1,6 +1,5 @@
 import csv
 import random
-from datetime import datetime, timedelta
 import json
 import pandas as pd
 
@@ -9,41 +8,37 @@ with open("config.json", "r") as file:
     CONFIG = json.load(file)
 
 def gerar_localizacao():
-    """Gera uma localização (GPS) com base no ficheiro config.json."""
-    local = random.choice(list(CONFIG["locais"].keys()))
-    latitude = round(random.uniform(*CONFIG["locais"][local]["latitude"]), 6)
-    longitude = round(random.uniform(*CONFIG["locais"][local]["longitude"]), 6)
-    return local, latitude, longitude
+    """Gera uma localização aleatória com base no ficheiro config.json."""
+    return random.choice([local for categoria in CONFIG["categorias_de_locais"].values() for local in categoria])
 
-def gerar_nivel_ruido(local):
-    """Gera um nível de ruído com base no local."""
-    ruido_min, ruido_max = CONFIG["locais"][local]["ruido"]
+def gerar_nivel_ruido():
+    """Gera um nível de ruído com base nos padrões gerais."""
+    ruido_min, ruido_max = CONFIG["padroes_gerais"]["ruido"]["silencio"][0], CONFIG["padroes_gerais"]["ruido"]["ruidoso"][1]
     ruido = random.uniform(ruido_min, ruido_max)
-    if ruido < 30:
+    if ruido < CONFIG["padroes_gerais"]["ruido"]["silencio"][1]:
         categoria = "silencio"
-    elif 30 <= ruido < 70:
+    elif ruido < CONFIG["padroes_gerais"]["ruido"]["moderado"][1]:
         categoria = "moderado"
     else:
         categoria = "ruidoso"
     return round(ruido, 2), categoria
 
-def gerar_movimento(local):
-    """Gera movimento com base no local e acelerómetro."""
-    estado = random.choice(CONFIG["locais"][local]["movimento"])
-    if estado == "estatico":
-        acelerometro = [random.uniform(-0.1, 0.1), random.uniform(-0.1, 0.1), 9.8 + random.uniform(-0.1, 0.1)]
-    elif estado == "movimento lento":
-        acelerometro = [random.uniform(-1, 1), random.uniform(-1, 1), random.uniform(8, 10)]
+def gerar_movimento():
+    """Gera um estado de movimento com base nos padrões gerais."""
+    movimento = random.choice(list(CONFIG["padroes_gerais"]["movimento"].keys()))
+    if movimento == "estatico":
+        acelerometro = [random.uniform(-0.2, 0.2), random.uniform(-0.2, 0.2), 9.8 + random.uniform(-0.2, 0.2)]
+    elif movimento == "movimento lento":
+        acelerometro = [random.uniform(-1.5, 1.5), random.uniform(-1.5, 1.5), random.uniform(8, 10)]
     else:  # movimento rapido
-        acelerometro = [random.uniform(-5, 5), random.uniform(-5, 5), random.uniform(5, 15)]
-    return estado, acelerometro
+        acelerometro = [random.uniform(-5.5, 5.5), random.uniform(-5.5, 5.5), random.uniform(5, 15)]
+    return movimento, acelerometro
 
 def gerar_giroscopio_aleatorio():
     """Gera dados aleatórios de giroscópio para X, Y e Z."""
-    # Dados realistas para giroscópio
-    gyroscope_x = round(random.uniform(-5, 5), 2)  # Eixo X do giroscópio
-    gyroscope_y = round(random.uniform(-5, 5), 2)  # Eixo Y do giroscópio
-    gyroscope_z = round(random.uniform(-10, 10), 2)  # Eixo Z do giroscópio
+    gyroscope_x = round(random.uniform(-5, 5), 2) + random.uniform(-0.1, 0.1)
+    gyroscope_y = round(random.uniform(-5, 5), 2) + random.uniform(-0.1, 0.1)
+    gyroscope_z = round(random.uniform(-10, 10), 2) + random.uniform(-0.1, 0.1)
     return gyroscope_x, gyroscope_y, gyroscope_z
 
 def gerar_orientacao_gyroscope(gyroscope_z):
@@ -53,88 +48,71 @@ def gerar_orientacao_gyroscope(gyroscope_z):
     else:  # Se for negativo ou distante de 0, indica "virado para baixo"
         return "virado para baixo"
 
-def gerar_data_aleatoria():
-    """Gera uma data/hora aleatória entre 01/01/2024 e 31/12/2024."""
-    data_inicio = datetime(2024, 1, 1)
-    data_fim = datetime(2024, 12, 31)
-    delta = data_fim - data_inicio
-    segundos_aleatorios = random.randrange(delta.days * 24 * 60 * 60)
-    return data_inicio + timedelta(seconds=segundos_aleatorios)
-
-def adicionar_outliers(dataset, num_outliers=50):
-    """Adiciona outliers (valores extremos) aleatoriamente no dataset."""
-    for _ in range(num_outliers):
-        index = random.choice(dataset.index)
-        # Adiciona outliers aos dados, como valores extremos para algumas colunas
-        dataset.at[index, 'latitude'] = random.uniform(50, 100)  # Outlier em latitude
-        dataset.at[index, 'longitude'] = random.uniform(-100, -50)  # Outlier em longitude
-        dataset.at[index, 'noise_level'] = random.uniform(100, 200)  # Outlier em ruído
-        dataset.at[index, 'acceleration_x'] = random.uniform(10, 20)  # Outlier em aceleração
-        dataset.at[index, 'acceleration_y'] = random.uniform(10, 20)  # Outlier em aceleração
-        dataset.at[index, 'acceleration_z'] = random.uniform(20, 30)  # Outlier em aceleração
-
 def determinar_estado(local, ruido_categoria, movimento, giroscopio):
-    
-    locais_silenciar = [
-        "Cinema NOS Colombo", "Teatro Politeama", "Auditorio Camoes",
-        "Biblioteca Nacional de Portugal", "Bertrand do Chiado"
-    ]
-    
-    locais_desligar = [
-        "Hospital da Luz", "Escola Rainha Dona Amelia", 
-        "Universidade Autonoma de Lisboa", "Farmacia Benfica"
-    ]
-    
-    #silenciar se o giroscópio indicar "virado para baixo"
-    if giroscopio == "virado para baixo":
-        return "silenciar"
-    
-    # Regra para locais silenciosos
-    elif local in locais_silenciar and ruido_categoria == "silencio" and movimento == "estatico":
-        return "silenciar"
-    
-    # Regra para locais inapropriados
-    if local in locais_desligar and movimento == "estatico":
+    categorias_locais = CONFIG["categorias_de_locais"]
+
+    # Identificar a categoria do local
+    categoria_local = next(
+        (categoria for categoria, locais in categorias_locais.items() if local in locais),
+        "Desconhecido"
+    )
+
+    # Lógica de decisão
+    if categoria_local in ["Religioso", "Educacional", "Entretenimento", "Saude", "Conferencias"] and ruido_categoria == "silencio" and movimento == "estatico" and giroscopio == "virado para baixo":
         return "desligar"
-    
-    return "não alterar"
+    elif (ruido_categoria in ["silencio", "moderado"] and movimento in ["estatico", "movimento lento"]):
+        return "silenciar"
+    else:
+        return "não alterar"
 
 
-def criar_dataset_csv(nome_arquivo="dataset_sintetico.csv", num_amostras=1000, num_outliers=50):
-    """Cria um dataset sintético com os dados necessários para o projeto."""
+def criar_dataset_csv(nome_arquivo="dataset_sintetico.csv", num_amostras_por_estado=3000):
+    """Cria um dataset com distribuição balanceada entre os estados."""
+    estados_possiveis = ["desligar", "silenciar", "não alterar"]
+    contadores = {estado: 0 for estado in estados_possiveis}
+    amostras_geradas = set()  # Para evitar duplicados
+    limite_total = num_amostras_por_estado * len(estados_possiveis)
+
     with open(nome_arquivo, mode="w", encoding="utf-8-sig", newline="") as csv_file:
         writer = csv.writer(csv_file)
         # Cabeçalho
-        writer.writerow([ 
-            "id", "datetime", "location", "latitude", "longitude",
-            "noise_level", "noise_category", "acceleration_x", "acceleration_y", "acceleration_z",
-            "gyroscope_x", "gyroscope_y", "gyroscope_z", "gyroscope_orientation", "movement_state","estado"
+        writer.writerow([
+            "id", "location", "noise_level", "noise_category",
+            "acceleration_x", "acceleration_y", "acceleration_z",
+            "gyroscope_x", "gyroscope_y", "gyroscope_z",
+            "gyroscope_orientation", "movement_state", "estado"
         ])
-        
-        for i in range(1, num_amostras + 1):
-            data_criacao = gerar_data_aleatoria()
-            local, latitude, longitude = gerar_localizacao()
-            ruido, categoria_ruido = gerar_nivel_ruido(local)
-            movimento, acelerometro = gerar_movimento(local)
+
+        id_amostra = 1  # Contador de IDs para as amostras
+
+        while sum(contadores.values()) < limite_total:  # Continuar até atingir o número total de amostras
+            local = gerar_localizacao()
+            ruido, categoria_ruido = gerar_nivel_ruido()
+            movimento, acelerometro = gerar_movimento()
             gyroscope_x, gyroscope_y, gyroscope_z = gerar_giroscopio_aleatorio()
             giroscopio_orientacao = gerar_orientacao_gyroscope(gyroscope_z)
-            estado = determinar_estado(local,categoria_ruido,movimento,giroscopio_orientacao)
+            estado = determinar_estado(local, categoria_ruido, movimento, giroscopio_orientacao)
 
-            # Escrever no CSV
-            writer.writerow([
-                i, data_criacao.strftime("%Y-%m-%d %H:%M:%S"), local, latitude, longitude,
-                ruido, categoria_ruido,
-                acelerometro[0], acelerometro[1], acelerometro[2],
-                gyroscope_x, gyroscope_y, gyroscope_z, giroscopio_orientacao, movimento, estado
-            ])
+            # Garantir que não excedemos o número desejado por estado
+            if estado and contadores[estado] < num_amostras_por_estado:
+                # Gerar hash único da amostra para evitar duplicados
+                amostra_hash = hash((local, ruido, categoria_ruido, tuple(acelerometro), gyroscope_x, gyroscope_y, gyroscope_z, estado))
 
-    # Criar outliers
-    dataset = pd.read_csv(nome_arquivo)
-    adicionar_outliers(dataset, num_outliers)
-    
-    # Salvar o dataset com outliers
-    dataset.to_csv(nome_arquivo, index=False)
-    print(f"Dataset sintético criado com sucesso: {nome_arquivo} ({num_amostras} amostras)")
+                if amostra_hash not in amostras_geradas:
+                    # Adicionar a amostra ao conjunto para evitar duplicados
+                    amostras_geradas.add(amostra_hash)
+
+                    # Escrever a amostra no CSV
+                    writer.writerow([
+                        id_amostra, local, ruido, categoria_ruido,
+                        acelerometro[0], acelerometro[1], acelerometro[2],
+                        gyroscope_x, gyroscope_y, gyroscope_z, giroscopio_orientacao, movimento, estado
+                    ])
+                    contadores[estado] += 1
+                    id_amostra += 1
+
+    print(f"Dataset criado com sucesso: {nome_arquivo}")
+    print(f"Distribuição final: {contadores}")
 
 if __name__ == "__main__":
-    criar_dataset_csv("dataset_sintetico.csv", 1000, 50)
+    criar_dataset_csv("dataset_sintetico.csv", num_amostras_por_estado=3000)
