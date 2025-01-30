@@ -87,6 +87,9 @@ python modelo.py
 - Guilherme Fernandes (30010398)
 - Tomás Viana (30010623)
 
+## 📄 Licença
+Este projeto está sob a licença MIT. Consulte o arquivo `LICENSE` para mais detalhes.
+
 ---
 
 Desenvolvido como projeto da disciplina de Inteligência Artificial
