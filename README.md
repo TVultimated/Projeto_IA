@@ -71,7 +71,7 @@ python modelo.py
 
 ### Métricas Principais
 ### Relatório de Classificação, contendo:
-- **Acurácia**: Percentagem de previsões corretas
+- **Exatidão**: Percentagem de previsões corretas
 - **Precisão**: Capacidade de identificar corretamente estados positivos
 - **Recall**: Capacidade de identificar todos os estados relevantes
 - **F1-Score**: Média harmônica entre precisão e recall
